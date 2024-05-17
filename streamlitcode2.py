@@ -141,6 +141,66 @@ def background_subtraction(video_path):
     writer.release()
     cv2.destroyAllWindows()
 
+def optical_flow(video_path):
+    cap = cv2.VideoCapture(video_path)
+
+    # Get the frames per second (fps) of the video
+    fps = cap.get(cv2.CAP_PROP_FPS)
+
+    # Get the width and height of the video frames
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+    # Define the codec for the output video file
+    output_video_path = os.path.join(os.getcwd(), 'output_opticalflow_apoorv_v6.avi')
+    writer = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*'MJPG'), 10, (width, height))
+
+    # Read the first frame of the video
+    ret, frame1 = cap.read()
+
+    # Convert the first frame to grayscale
+    prvs = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
+
+    # Create an HSV image with all values set to 0
+    hsv = np.zeros_like(frame1)
+    hsv[..., 1] = 255  # Set image saturation to maximum
+
+    # Loop through the rest of the frames in the video
+    while True:
+        # Read the next frame of the video
+        ret, frame2 = cap.read()
+
+        # If there are no more frames, break out of the loop
+        if not ret:
+            break
+
+        # Convert the current frame to grayscale
+        next = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
+
+        # Calculate the optical flow between the two frames using Farneback method
+        flow = cv2.calcOpticalFlowFarneback(prvs, next, None, 0.5, 3, 15, 3, 7, 1.2, 0)
+
+        # Calculate the magnitude and angle of each 2D vector in flow
+        mag, ang = cv2.cartToPolar(flow[..., 0], flow[..., 1])
+
+        # Convert angle to hue value and magnitude to value value for each pixel in hsv image
+        hsv[..., 0] = ang * 180 / np.pi / 2
+        hsv[..., 2] = cv2.normalize(mag, None, 0, 255, cv2.NORM_MINMAX)
+
+        # Convert hsv image to bgr image
+        bgr = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+        bgr1 = cv2.applyColorMap(bgr * 5, cv2.COLORMAP_PLASMA)
+
+        # Write the current frame to output video file
+        writer.write(bgr1)
+
+        # Set prvs to next for next iteration of loop
+        prvs = next
+
+    # Release VideoCapture and VideoWriter objects and close all windows
+    cap.release()
+    writer.release()
+    cv2.destroyAllWindows()
 
 
 def main():
@@ -218,6 +278,27 @@ def main():
                     data=open("stable_Background.avi", "rb").read(),
                     file_name="stable_Background.avi",
                     mime="video/avi")
+        if "Optical Flow Algorithm" in selected_techniques:
+            st.subheader("calculating optical flow")
+            st.write("Upload a video file")
+            uploaded_file = st.file_uploader("Choose a video file", type=["mp4", "avi", "mov"])
 
+            if uploaded_file is not None:
+                # Save the uploaded video file
+                with open("temp_video.mov", "wb") as f:
+                    f.write(uploaded_file.getvalue())
+
+                # Perform background subtraction on the uploaded video
+                optical_flow("temp_video.mov")
+
+                # Show the processed video
+                #st.video("stable_Background.avi")
+                # Add a download button for the processed video
+                st.download_button(
+                    label="Download Processed Video",
+                    data=open("stable_Background.avi", "rb").read(),
+                    file_name="stable_Background.avi",
+                    mime="video/avi")
+            
 if __name__ == "__main__":
     main()
