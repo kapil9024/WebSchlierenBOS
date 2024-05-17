@@ -132,6 +132,7 @@ def background_subtraction(video_path):
         frame = cv2.medianBlur(frame, 5)
         frame1 = cv2.applyColorMap(frame, cv2.COLORMAP_JET)
         writer.write(frame1)
+        background=img
         ret, img = cap.read()
         if not ret:
             break
