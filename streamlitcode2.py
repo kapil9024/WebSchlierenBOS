@@ -205,7 +205,7 @@ def optical_flow(video_path):
 
 
 def main():
-    st.image("header_image.jpg", use_column_width=True)
+    st.image("header.jpg", use_column_width=True)
     st.title("WELCOME TO WEBSchlieren (BOS)")
     st.title("visualize the invisible ")
 
