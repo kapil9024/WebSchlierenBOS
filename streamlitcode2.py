@@ -82,7 +82,7 @@ def background_subtraction_live():
         if k == 27:  # Esc key to stop
             break 
     cap.release()
-    cv2.destroyAllWindows() 
+    #cv2.destroyAllWindows() 
     
     
     
@@ -140,7 +140,7 @@ def background_subtraction(video_path):
     # Release resources
     cap.release()
     writer.release()
-    cv2.destroyAllWindows()
+    #cv2.destroyAllWindows()
 
 def optical_flow(video_path):
     cap = cv2.VideoCapture(video_path)
@@ -201,7 +201,7 @@ def optical_flow(video_path):
     # Release VideoCapture and VideoWriter objects and close all windows
     cap.release()
     writer.release()
-    cv2.destroyAllWindows()
+    #cv2.destroyAllWindows()
 
 
 def main():
