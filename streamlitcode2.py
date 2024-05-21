@@ -116,7 +116,8 @@ def background_subtraction(video_path):
     meanframe = cv2.absdiff(img, background)
 
     # Initialize video writer
-    output_video_path = os.path.join(os.getcwd(), 'stable_Background.avi')
+    #output_video_path = os.path.join(os.getcwd(), 'stable_Background.avi')
+    output_video_path = os.path.join(os.getcwd(), f'stable_Background_{uuid.uuid4()}.avi')
     writer = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*'MJPG'), 10, (width, height))
 
     while ret:
@@ -153,7 +154,8 @@ def optical_flow(video_path):
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
     # Define the codec for the output video file
-    output_video_path = os.path.join(os.getcwd(), 'output_opticalflow_apoorv_v6.avi')
+    #output_video_path = os.path.join(os.getcwd(), 'output_opticalflow_apoorv_v6.avi')
+    output_video_path = os.path.join(os.getcwd(), f'output_opticalflow_{uuid.uuid4()}.avi')
     writer = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*'MJPG'), 10, (width, height))
 
     # Read the first frame of the video
